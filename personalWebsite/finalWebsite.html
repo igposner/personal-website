@@ -30,14 +30,16 @@
 
     nav {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
       align-items: center;
       padding: 16px 32px;
-      position: sticky;
+      position: fixed;
       top: 0;
-      background: #d8ede0;
-      border-bottom: 2px solid #2a4a35;
+      left: 0;
+      right: 0;
+      background: transparent;
       z-index: 100;
+      pointer-events: none;
     }
 
     nav a {
@@ -47,6 +49,7 @@
     }
 
     nav a.brand {
+      display: none;
       font-weight: bold;
       font-size: 1.1rem;
       margin-left: 0;
@@ -56,6 +59,14 @@
       display: flex;
       gap: 20px;
       align-items: center;
+      pointer-events: auto;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    nav.links-hidden .nav-icons {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-8px);
     }
 
     .nav-icons a {
@@ -82,13 +93,13 @@
 
     /* ── Home ── */
     #home {
-      min-height: 85vh;
+      min-height: 100vh;
       background: transparent;
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 64px;
+      padding: 96px 64px 112px;
       color: #2a4a35;
     }
 
@@ -177,10 +188,18 @@
     .home-links {
       display: flex;
       gap: 40px;
-      position: absolute;
+      position: fixed;
       bottom: 40px;
       left: 50%;
       transform: translateX(-50%);
+      z-index: 2147483000;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .home-links.links-hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-50%) translateY(12px);
     }
 
     .home-links a {
@@ -711,33 +730,78 @@
       position: absolute;
       left: 12px;
       bottom: 12px;
-      background: #fff;
-      border: 2px solid #2a4a35;
-      border-radius: 10px;
-      padding: 5px 10px;
+      background:
+        linear-gradient(#fff9ea, #fff9ea) padding-box,
+        repeating-linear-gradient(135deg, #c0392b 0 6px, #fff9ea 6px 10px, #2a4a35 10px 16px, #fff9ea 16px 20px) border-box;
+      border: 4px solid transparent;
+      border-radius: 3px;
+      padding: 12px 14px;
+      width: 230px;
+      min-height: 112px;
       font-family: 'Bangers', cursive;
-      font-size: 0.9rem;
+      font-size: 1rem;
       letter-spacing: 0.06em;
       color: #2a4a35;
-      text-align: center;
+      text-align: left;
       pointer-events: none;
-      box-shadow: 3px 3px 0 #2a4a35;
+      box-shadow: 4px 4px 0 #2a4a35;
       z-index: 200;
-      white-space: nowrap;
+      white-space: normal;
+      overflow: hidden;
+    }
+
+    .map-tooltip-title {
+      display: block;
+      font-family: 'Fraunces', serif;
+      font-size: 1.05rem;
+      font-style: italic;
+      line-height: 1.05;
+      max-width: 132px;
+    }
+
+    .map-tooltip-memory {
+      display: block;
+      margin-top: 8px;
+      font-family: 'Lora', cursive;
+      font-size: 0.76rem;
+      font-style: italic;
+      letter-spacing: 0.01em;
+      opacity: 0.78;
+      line-height: 1.42;
+      max-width: 132px;
     }
 
     .map-tooltip::after {
-      display: none;
+      content: '';
+      position: absolute;
+      right: 14px;
+      bottom: 16px;
+      width: 70px;
+      height: 34px;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 9px,
+        rgba(42, 74, 53, 0.35) 9px,
+        rgba(42, 74, 53, 0.35) 10px
+      );
     }
 
     .map-tooltip::before {
-      display: none;
+      content: '';
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      width: 36px;
+      height: 28px;
+      border: 1.5px dashed rgba(42, 74, 53, 0.55);
+      box-shadow: inset 0 0 0 3px rgba(42, 74, 53, 0.08);
     }
 
     /* ── Mobile ── */
     @media (max-width: 768px) {
       nav { padding: 12px 16px; }
-      #home { padding: 48px 20px; min-height: auto; align-items: flex-start; }
+      #home { padding: 72px 20px 80px; min-height: 100vh; align-items: flex-start; }
       .home-main { flex-direction: column; gap: 24px; position: static; max-width: none; }
       .home-left, .home-right { width: 100%; height: auto; }
       .home-left { gap: 24px; }
@@ -748,7 +812,8 @@
       .name-first, .name-last { font-size: 2.4rem; }
       .widget { width: 100%; }
       .spotify-card { width: 100%; }
-      .home-links { position: static; transform: none; flex-direction: column; gap: 16px; margin-top: 40px; align-items: flex-start; }
+      .home-links { position: fixed; transform: translateX(-50%); flex-direction: column; gap: 16px; margin-top: 0; align-items: center; bottom: 24px; }
+      .home-links.links-hidden { transform: translateX(-50%) translateY(12px); }
       section { padding: 40px 20px; }
       .text-box { padding: 20px; max-width: 100%; box-shadow: 3px 3px 0 #2a4a35; }
       #research { padding: 40px 20px; }
@@ -768,6 +833,12 @@
       <a href="mailto:igposner06@gmail.com" title="Email"><i class="fa-solid fa-envelope"></i></a>
     </div>
   </nav>
+
+  <div class="home-links">
+    <a href="#about">About Me</a>
+    <a href="#research">Research</a>
+    <a href="#photography">Photography</a>
+  </div>
 
   <div id="vanta-bg">
   <section id="home">
@@ -810,11 +881,6 @@
       </div>
     </div>
 
-    <div class="home-links">
-      <a href="#about">About Me</a>
-      <a href="#research">Research</a>
-      <a href="#photography">Photography</a>
-    </div>
   </section>
 
   <section id="about">
@@ -978,6 +1044,18 @@
       document.getElementById('stats-bubble')?.classList.remove('open');
     });
 
+    const topNav = document.querySelector('nav');
+    const homeLinks = document.querySelector('.home-links');
+    const photographySection = document.getElementById('photography');
+    if (topNav && photographySection) {
+      const photoObserver = new IntersectionObserver(entries => {
+        const photosVisible = entries.some(entry => entry.isIntersecting);
+        topNav.classList.toggle('links-hidden', photosVisible);
+        homeLinks?.classList.toggle('links-hidden', photosVisible);
+      }, { threshold: 0.05 });
+      photoObserver.observe(photographySection);
+    }
+
     /* ── Lightbox ── */
     let lbIdx = 0;
 
@@ -1093,7 +1171,7 @@
     /* ── World Map ── */
     const PLACES = [
       { name: 'Missouri',       coords: [-90.197,  38.627] },
-      { name: 'California',     coords: [-122.419, 37.774] },
+      { name: 'California SF',  coords: [-122.419, 37.774] },
       { name: 'Mexico',         coords: [-86.851,  21.161] },
       { name: 'Massachusetts',  coords: [-71.059,  42.360] },
       { name: 'Canada',         coords: [-79.383,  43.653] },
@@ -1102,7 +1180,7 @@
       { name: 'New York',       coords: [-74.006,  40.713] },
       { name: 'Illinois',       coords: [-87.629,  41.878] },
       { name: 'Florida',        coords: [-80.191,  25.774] },
-      { name: 'California',     coords: [-118.244, 34.052] },
+      { name: 'California SD',  coords: [-117.161, 32.716] },
       { name: 'Arizona',        coords: [-112.074, 33.449] },
       { name: 'Nevada',         coords: [-115.137, 36.175] },
       { name: 'Michigan',       coords: [-83.045,  42.331] },
@@ -1120,6 +1198,36 @@
       { name: 'Ireland',        coords: [-6.267,   53.333] },
       { name: 'United Kingdom', coords: [-0.118,   51.509] },
     ];
+
+    const PLACE_MEMORIES = {
+      Missouri: 'College, friends, new experiences',
+      'California SF': 'Visiting friends, never wanting to leave',
+      'California SD': 'Family Vacation, lots of ping pong',
+      Mexico: 'Swimming in caves',
+      Massachusetts: 'Birth and so much family',
+      Canada: 'Niagra falls',
+      Oregon: "Family, the ocean, Powell's Bookstore",
+      Washington: 'Jumping off cliffs, searching for treasure',
+      'New York': 'Impulse buying a really ugly coat',
+      Illinois: 'Home, Lake Michigan',
+      Florida: 'Universal Studios',
+      Arizona: 'Long hikes in the Grand Canyon',
+      Nevada: "Was here in my teens and couldn't do anything",
+      Michigan: 'Booling with friends and so much basketball',
+      Indiana: 'The dunes',
+      Ohio: 'Really good bbq here once',
+      Pennsylvania: 'Long roadtrips and fishing',
+      'North Carolina': 'Family and college visits',
+      Wisconsin: 'My sister',
+      France: 'I was so young I chose to get food instead of see the Lourve',
+      Germany: 'My first travel photography',
+      Switzerland: 'Hiking, Cows, and Sunsets',
+      Austria: 'My first stay in a hostel',
+      Czechia: 'Biking through the countryside in a storm',
+      Sweden: 'Seeing Stockholm with my mom',
+      Ireland: 'Long talk with my dad',
+      'United Kingdom': 'Really good pastries'
+    };
 
     async function buildMap() {
       const container = document.getElementById('world-map');
@@ -1173,7 +1281,11 @@
           g.append('circle').attr('r', 1.8).attr('fill', '#d8ede0');
           g.on('mouseover', () => {
             const tip = document.getElementById('map-tooltip');
-            tip.textContent = name;
+            const memory = PLACE_MEMORIES[name];
+            tip.innerHTML = `
+              <span class="map-tooltip-title">${name}</span>
+              ${memory ? `<span class="map-tooltip-memory">${memory}</span>` : ''}
+            `;
             tip.style.display = 'block';
           }).on('mouseout', () => {
             document.getElementById('map-tooltip').style.display = 'none';
