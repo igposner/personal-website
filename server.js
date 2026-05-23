@@ -79,16 +79,39 @@ async function getNowPlaying() {
       path: '/v1/me/player/currently-playing',
       headers: { 'Authorization': `Bearer ${token}` }
     });
-    if (res.status === 204 || !res.body) return { playing: false };
-    const json = JSON.parse(res.body);
-    if (!json.item) return { playing: false };
-    return {
-      playing: json.is_playing,
-      title: json.item.name,
-      artist: json.item.artists.map(a => a.name).join(', '),
-      albumArt: json.item.album.images[0]?.url || null,
-      songUrl: json.item.external_urls.spotify
-    };
+    if (res.status === 200 && res.body) {
+      const json = JSON.parse(res.body);
+      if (json.item) {
+        return {
+          playing: json.is_playing,
+          title: json.item.name,
+          artist: json.item.artists.map(a => a.name).join(', '),
+          albumArt: json.item.album.images[0]?.url || null,
+          songUrl: json.item.external_urls.spotify
+        };
+      }
+    }
+    // Not currently playing — fetch most recent track
+    const recentRes = await httpsGet({
+      hostname: 'api.spotify.com',
+      path: '/v1/me/player/recently-played?limit=1',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (recentRes.status === 200 && recentRes.body) {
+      const recentJson = JSON.parse(recentRes.body);
+      const track = recentJson.items?.[0]?.track;
+      if (track) {
+        return {
+          playing: false,
+          lastPlayed: true,
+          title: track.name,
+          artist: track.artists.map(a => a.name).join(', '),
+          albumArt: track.album.images[0]?.url || null,
+          songUrl: track.external_urls.spotify
+        };
+      }
+    }
+    return { playing: false };
   } catch (e) {
     return { playing: false };
   }

@@ -90,6 +90,7 @@
       color: #2a4a35;
     }
 
+
     .home-main {
       display: flex;
       flex-direction: row;
@@ -148,33 +149,40 @@
       color: #2a4a35;
     }
 
-    #about h2 {
+    #research h2, #about h2 {
       color: #2a4a35;
       margin-bottom: 16px;
     }
 
-    #about p {
-      max-width: 600px;
+    #research p, #about p {
       line-height: 1.7;
       color: #4a7a5a !important;
     }
 
-    /* ── Research ── */
+    .text-box {
+      background: #d8ede0;
+      border: 1px solid #b8d8c4;
+      box-shadow: 0 4px 24px rgba(42,74,53,0.08);
+      padding: 32px 40px;
+      max-width: 680px;
+    }
+
+    /* ── Research layout ── */
     #research {
       min-height: 55vh;
       background: transparent;
       color: #2a4a35;
+      display: block;
+      padding: 64px 32px;
     }
 
-    #research h2 {
-      color: #2a4a35;
-      margin-bottom: 16px;
+    .research-content {
+      width: 100%;
     }
 
-    #research p {
-      max-width: 600px;
-      line-height: 1.7;
-      color: #4a7a5a !important;
+    .brain-hint {
+      display: none;
+      pointer-events: none;
     }
 
     /* ── Photography / Justified Collage ── */
@@ -225,7 +233,6 @@
       max-width: 90vw;
       max-height: 90vh;
       object-fit: contain;
-      border-radius: 6px;
       box-shadow: 0 24px 64px rgba(0,0,0,0.6);
     }
 
@@ -245,6 +252,26 @@
 
     .lightbox-close:hover { opacity: 1; }
 
+    .lightbox-nav {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      color: white;
+      font-size: 2.5rem;
+      cursor: pointer;
+      opacity: 0.7;
+      background: none;
+      border: none;
+      z-index: 1001;
+      padding: 16px;
+      line-height: 1;
+      user-select: none;
+    }
+
+    .lightbox-nav:hover { opacity: 1; }
+    .lightbox-nav.prev { left: 16px; }
+    .lightbox-nav.next { right: 16px; }
+
     /* ── Widgets ── */
     .widgets {
       display: flex;
@@ -254,9 +281,9 @@
     }
 
     .widget {
-      background: #f9f9f9;
-      border: 1px solid #eee;
-      border-radius: 12px;
+      background: #d8ede0;
+      border: 1px solid #b8d8c4;
+      box-shadow: 0 4px 24px rgba(42,74,53,0.08);
       padding: 20px;
     }
 
@@ -381,6 +408,64 @@
       overflow: hidden;
       line-height: 1.3;
     }
+
+    .lb-film {
+      position: relative;
+    }
+
+    .film-bubble {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 12px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 180px;
+      background: #fff;
+      border: 2px solid #2a4a35;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 0.78rem;
+      color: #2a4a35;
+      line-height: 1.5;
+      text-align: center;
+      z-index: 200;
+      pointer-events: none;
+      box-shadow: 3px 3px 0 #2a4a35;
+    }
+
+    .film-bubble::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 8px solid transparent;
+      border-top-color: #2a4a35;
+    }
+
+    .film-bubble::before {
+      content: '';
+      position: absolute;
+      top: calc(100% - 2px);
+      left: 50%;
+      transform: translateX(-50%);
+      border: 8px solid transparent;
+      border-top-color: #fff;
+      z-index: 1;
+    }
+
+    .film-bubble-attr {
+      margin-top: 6px;
+      font-style: normal;
+      font-size: 0.68rem;
+      opacity: 0.65;
+    }
+
+    .lb-film:hover .film-bubble {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -390,6 +475,7 @@
     <div class="nav-icons">
       <a href="https://www.instagram.com/posner_photography" target="_blank" title="Photography Instagram"><i class="fa-solid fa-camera"></i></a>
       <a href="https://www.linkedin.com/in/isaacposner14" target="_blank" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+      <a href="https://letterboxd.com/bigcaasirolle/" target="_blank" title="Letterboxd"><img src="https://cdn.simpleicons.org/letterboxd/2a4a35" width="18" height="18" alt="Letterboxd" style="display:block;opacity:0.7;transition:opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.7"></a>
       <a href="mailto:igposner06@gmail.com" title="Email"><i class="fa-solid fa-envelope"></i></a>
     </div>
   </nav>
@@ -433,13 +519,19 @@
   </section>
 
   <section id="about">
-    <h2>About Me</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    <div class="text-box">
+      <h2>About Me</h2>
+      <p>I am a student at WashU who loves anything math, neuroscience or AI. I am currently doing research, learning ML, watching movies, and exploring the world around me. Last week I visited SF for the first time and found myself entranced. The passion, determination, and drive to be the best that I found in that city has sparked an insatiable desire to fully immerse myself in that culture.</p>
+    </div>
   </section>
 
   <section id="research">
-    <h2>Research</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.</p>
+    <div class="research-content">
+      <div class="text-box">
+        <h2>Research</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.</p>
+      </div>
+    </div>
   </section>
 
   </div><!-- end vanta-bg -->
@@ -468,6 +560,8 @@
   <!-- Lightbox -->
   <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
     <button class="lightbox-close" onclick="closeLightbox(event)">&times;</button>
+    <button class="lightbox-nav prev" onclick="navigateLightbox(-1, event)">&#8249;</button>
+    <button class="lightbox-nav next" onclick="navigateLightbox(1, event)">&#8250;</button>
     <img class="lightbox-img" id="lightbox-img" src="" alt="">
   </div>
 
@@ -477,6 +571,7 @@
       try {
         const data = await fetch('/api/now-playing').then(r => r.json());
         const card = document.getElementById('spotify-card');
+        const widgetLabel = card.closest('.widget').querySelector('.widget-label');
         const artEl = card.querySelector('img, .no-art');
         const titleEl = card.querySelector('.title');
         const artistEl = card.querySelector('.artist');
@@ -496,8 +591,27 @@
           }
           titleEl.textContent = data.title;
           artistEl.textContent = data.artist;
+          widgetLabel.textContent = 'Now Playing';
           dot.className = 'dot live';
           statusText.textContent = 'Live';
+          card.style.cursor = 'pointer';
+          card.onclick = () => window.open(data.songUrl, '_blank');
+        } else if (data.lastPlayed && data.title) {
+          if (data.albumArt) {
+            if (artEl.tagName !== 'IMG') {
+              const img = document.createElement('img');
+              img.src = data.albumArt;
+              img.alt = data.title;
+              artEl.replaceWith(img);
+            } else {
+              artEl.src = data.albumArt;
+            }
+          }
+          widgetLabel.textContent = 'Last Played';
+          titleEl.textContent = data.title;
+          artistEl.textContent = data.artist;
+          dot.className = 'dot';
+          statusText.textContent = 'Last played';
           card.style.cursor = 'pointer';
           card.onclick = () => window.open(data.songUrl, '_blank');
         } else {
@@ -511,13 +625,23 @@
       } catch (e) {}
     }
 
+    const FILM_QUOTES = {
+      'dead-poets-society': { quote: 'That the powerful play goes on, and you may contribute a verse.', attr: '— Mr. Keating' },
+      'perfect-days-2023':  { quote: 'Next time is next time. Now is now.', attr: '— Hirayama' },
+      'kill-bill-vol-1':    { quote: 'Wiggle your big toe.', attr: '— The Bride' },
+      'la-haine':           { quote: "It's the story of a man falling from a fifty-story building. As he falls, he keeps telling himself: so far so good, so far so good. But what matters isn't the fall — it's the landing.", attr: '— Hubert' }
+    };
+
     async function updateLetterboxd() {
       try {
         const films = await fetch('/api/letterboxd-favorites').then(r => r.json());
         const container = document.getElementById('lb-films');
         if (!films.length) { container.innerHTML = '<div style="color:#aaa;font-size:0.85rem;">No favorites found</div>'; return; }
-        container.innerHTML = films.map(f => `
+        container.innerHTML = films.map(f => {
+          const quote = FILM_QUOTES[f.slug] || null;
+          return `
           <div class="lb-film">
+            ${quote ? `<div class="film-bubble">“${quote.quote}”<div class="film-bubble-attr">${quote.attr}</div></div>` : ''}
             <a href="${f.url}" target="_blank">
               ${f.poster
                 ? `<img src="${f.poster}" alt="${f.title}">`
@@ -525,7 +649,7 @@
               <div class="film-title">${f.title}</div>
             </a>
           </div>
-        `).join('');
+        `}).join('');
       } catch (e) {}
     }
 
@@ -535,11 +659,23 @@
     setInterval(updateLetterboxd, 10 * 60 * 1000);
 
     /* ── Lightbox ── */
-    function openLightbox(src) {
-      const lb = document.getElementById('lightbox');
-      document.getElementById('lightbox-img').src = src;
-      lb.classList.add('open');
+    let lbIdx = 0;
+
+    function getLbSrcs() {
+      return [...document.querySelectorAll('.photo-item')].map(el => el.dataset.src);
+    }
+
+    function openLightbox(idx) {
+      const srcs = getLbSrcs();
+      lbIdx = ((idx % srcs.length) + srcs.length) % srcs.length;
+      document.getElementById('lightbox-img').src = srcs[lbIdx];
+      document.getElementById('lightbox').classList.add('open');
       document.body.style.overflow = 'hidden';
+    }
+
+    function navigateLightbox(dir, e) {
+      if (e) e.stopPropagation();
+      openLightbox(lbIdx + dir);
     }
 
     function closeLightbox(e) {
@@ -548,7 +684,20 @@
       document.body.style.overflow = '';
     }
 
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+    document.addEventListener('keydown', e => {
+      const lb = document.getElementById('lightbox');
+      if (!lb.classList.contains('open')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowRight') navigateLightbox(1);
+      if (e.key === 'ArrowLeft')  navigateLightbox(-1);
+    });
+
+    let touchStartX = 0;
+    document.getElementById('lightbox').addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+    document.getElementById('lightbox').addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(dx) > 50) navigateLightbox(dx < 0 ? 1 : -1);
+    });
 
     /* ── Justified Collage ── */
     function buildCollage() {
@@ -586,7 +735,7 @@
       }
 
       // Absolutely position every photo at its exact aspect-ratio dimensions.
-      let y = 0;
+      let y = 0, photoIdx = 0;
       rows.forEach(({ items, h }, rowIdx) => {
         const rowW = items.reduce((s, i) => s + Math.round(i.aspect * h), 0) + gap * (items.length - 1);
         const isLast = rowIdx === rows.length - 1;
@@ -597,7 +746,8 @@
           item.el.style.top    = Math.round(y) + 'px';
           item.el.style.width  = Math.round(w) + 'px';
           item.el.style.height = Math.round(h) + 'px';
-          item.el.onclick = () => openLightbox(item.el.dataset.src);
+          const idx = photoIdx++;
+          item.el.onclick = () => openLightbox(idx);
           x += Math.round(w) + gap;
         });
         y += Math.round(h) + gap;
@@ -618,6 +768,7 @@
     });
 
     window.addEventListener('resize', buildCollage);
+
 
     /* ── Vanta Birds ── */
     VANTA.BIRDS({
