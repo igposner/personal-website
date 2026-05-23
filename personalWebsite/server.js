@@ -73,7 +73,11 @@ async function getAccessToken() {
   return JSON.parse(res.body).access_token;
 }
 
+let npCache = null;
+let npCacheTime = 0;
+
 async function getNowPlaying() {
+  if (npCache && Date.now() - npCacheTime < 30 * 1000) return npCache;
   try {
     const token = await getAccessToken();
     const res = await httpsGet({
@@ -84,13 +88,15 @@ async function getNowPlaying() {
     if (res.status === 200 && res.body) {
       const json = JSON.parse(res.body);
       if (json.item) {
-        return {
+        npCache = {
           playing: json.is_playing,
           title: json.item.name,
           artist: json.item.artists.map(a => a.name).join(', '),
           albumArt: json.item.album.images[0]?.url || null,
           songUrl: json.item.external_urls.spotify
         };
+        npCacheTime = Date.now();
+        return npCache;
       }
     }
     // Not currently playing — fetch most recent track
@@ -103,7 +109,7 @@ async function getNowPlaying() {
       const recentJson = JSON.parse(recentRes.body);
       const track = recentJson.items?.[0]?.track;
       if (track) {
-        return {
+        npCache = {
           playing: false,
           lastPlayed: true,
           title: track.name,
@@ -111,11 +117,13 @@ async function getNowPlaying() {
           albumArt: track.album.images[0]?.url || null,
           songUrl: track.external_urls.spotify
         };
+        npCacheTime = Date.now();
+        return npCache;
       }
     }
-    return { playing: false };
+    return npCache || { playing: false };
   } catch (e) {
-    return { playing: false };
+    return npCache || { playing: false };
   }
 }
 

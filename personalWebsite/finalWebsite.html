@@ -88,6 +88,13 @@
 
     /* ── Vanta wrapper ── */
     #vanta-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
       background: #d8ede0;
     }
 
@@ -121,7 +128,6 @@
       max-width: calc(var(--left-col-width) + var(--right-col-width) + var(--right-gap));
       width: 100%;
       position: relative;
-      align-self: flex-start;
     }
 
     .home-left,
@@ -222,6 +228,159 @@
       min-height: 55vh;
       background: transparent;
       color: #2a4a35;
+      padding-left: 160px;
+    }
+
+    .about-layout {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      flex-wrap: wrap;
+    }
+
+    /* ── Bookshelf ── */
+    .bookshelf-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .bookshelf-section .widget-label {
+      margin-bottom: 0;
+    }
+
+    .bookshelf {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      perspective: 900px;
+    }
+
+    .shelf-books {
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      padding: 0 12px;
+    }
+
+    .book {
+      position: relative;
+      width: 32px;
+      display: flex;
+      align-items: stretch;
+      transform-origin: bottom center;
+      transition: transform 0.22s ease, filter 0.22s ease;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .book:hover {
+      transform: translateY(-14px) rotateX(-12deg) scale(1.06);
+      filter: brightness(1.08);
+      z-index: 10;
+    }
+
+    .book-spine {
+      width: 100%;
+      height: var(--h);
+      background: var(--c);
+      border: 1.5px solid rgba(0,0,0,0.25);
+      border-bottom: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      box-shadow: inset -3px 0 6px rgba(0,0,0,0.18), inset 2px 0 4px rgba(255,255,255,0.07);
+    }
+
+    .book-spine span {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      font-size: 0.58rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: rgba(255,255,255,0.88);
+      text-transform: uppercase;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-height: calc(var(--h) - 16px);
+      padding: 0 3px;
+    }
+
+    .book-popup {
+      position: absolute;
+      bottom: calc(100% + 16px);
+      left: 50%;
+      transform: translateX(-50%) translateY(6px);
+      width: 180px;
+      background: #d8ede0;
+      border: 2px solid #2a4a35;
+      box-shadow: 4px 4px 0 #2a4a35;
+      padding: 14px 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+      z-index: 100;
+    }
+
+    .book-popup::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: #2a4a35;
+    }
+
+    .book:hover .book-popup {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .book-popup-title {
+      font-family: 'Fraunces', serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #2a4a35;
+      line-height: 1.25;
+      margin-bottom: 4px;
+    }
+
+    .book-popup-author {
+      font-size: 0.68rem;
+      color: #4a7a5a;
+      letter-spacing: 0.04em;
+      margin-bottom: 8px;
+    }
+
+    .book-popup-note {
+      font-size: 0.7rem;
+      font-style: italic;
+      color: #666;
+      line-height: 1.4;
+    }
+
+    .shelf-plank {
+      height: 16px;
+      background: linear-gradient(to bottom, #c8b89a, #a8926e);
+      border: 2px solid #2a4a35;
+      box-shadow: 4px 4px 0 #2a4a35;
+      position: relative;
+    }
+
+    .shelf-plank::before {
+      content: '';
+      position: absolute;
+      inset: 3px 0 0;
+      background: repeating-linear-gradient(
+        90deg,
+        transparent 0, transparent 40px,
+        rgba(0,0,0,0.04) 40px, rgba(0,0,0,0.04) 41px
+      );
     }
 
     #research h2, #about h2 {
@@ -268,15 +427,94 @@
 
     /* ── Research layout ── */
     #research {
-      min-height: 55vh;
       background: transparent;
       color: #2a4a35;
-      display: block;
-      padding: 64px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      padding: 64px 64px 140px 160px;
     }
 
-    .research-content {
-      width: 100%;
+    #research .text-box {
+      max-width: none;
+    }
+
+    .beyond-lab-box {
+      background: #d8ede0;
+      border: 2px solid #2a4a35;
+      box-shadow: 4px 4px 0 #2a4a35;
+      padding: 32px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .beyond-lab-box::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 220px; height: 200px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='7'%3E%3Ccircle cx='3.5' cy='3.5' r='2.4' fill='%232a4a35' fill-opacity='0.16'/%3E%3C/svg%3E");
+      -webkit-mask-image: radial-gradient(ellipse 100% 100% at top right, black 20%, transparent 72%);
+      mask-image: radial-gradient(ellipse 100% 100% at top right, black 20%, transparent 72%);
+      pointer-events: none;
+    }
+
+    .beyond-lab-box::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 180px; height: 160px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Ccircle cx='3' cy='3' r='2.1' fill='%232a4a35' fill-opacity='0.16'/%3E%3C/svg%3E");
+      -webkit-mask-image: radial-gradient(ellipse 100% 100% at bottom left, black 20%, transparent 72%);
+      mask-image: radial-gradient(ellipse 100% 100% at bottom left, black 20%, transparent 72%);
+      pointer-events: none;
+    }
+
+    .beyond-lab-box h2 {
+      color: #2a4a35;
+      margin-bottom: 24px;
+    }
+
+    .project-items {
+      display: flex;
+      gap: 0;
+    }
+
+    .project-item {
+      flex: 1;
+      padding: 0 32px;
+      border-left: 1.5px solid rgba(42,74,53,0.2);
+    }
+
+    .project-item:first-child {
+      padding-left: 0;
+      border-left: none;
+    }
+
+    .project-item:last-child {
+      padding-right: 0;
+    }
+
+    .project-item-title {
+      font-family: 'Fraunces', serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #2a4a35;
+      margin-bottom: 4px;
+    }
+
+    .project-item-tag {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #999;
+      margin-bottom: 10px;
+    }
+
+    .project-item p {
+      line-height: 1.7;
+      color: #4a7a5a;
+      margin: 0;
     }
 
     .brain-hint {
@@ -292,6 +530,7 @@
     .photo-grid {
       position: relative;
       width: 100%;
+      background: #d8ede0;
     }
 
     .photo-item {
@@ -417,6 +656,25 @@
       letter-spacing: 0.1em;
       color: #999;
       margin-bottom: 12px;
+    }
+
+    .map-header {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    .map-header .widget-label {
+      margin-bottom: 0;
+      white-space: nowrap;
+    }
+
+    .map-quote {
+      font-size: 0.7rem;
+      font-style: italic;
+      color: #aaa;
+      line-height: 1.3;
     }
 
     /* Spotify */
@@ -840,7 +1098,8 @@
     <a href="#photography">Photography</a>
   </div>
 
-  <div id="vanta-bg">
+  <div id="vanta-bg"></div>
+
   <section id="home">
     <div class="home-main">
       <div class="home-left">
@@ -850,7 +1109,10 @@
         </div>
 
         <div class="widget map-widget">
-          <div class="widget-label">Places I've Been</div>
+          <div class="map-header">
+            <div class="widget-label">Places I've Been</div>
+            <div class="map-quote">"The world is big, and I want to have a good look at it before it gets dark." — John Muir</div>
+          </div>
           <div id="world-map"><div class="map-tooltip" id="map-tooltip"></div></div>
         </div>
       </div>
@@ -870,6 +1132,7 @@
             </div>
           </div>
           <div class="stats-bubble" id="stats-bubble"></div>
+          <img src="https://cdn.simpleicons.org/spotify/2a4a35" width="16" height="16" alt="Spotify" style="position:absolute;bottom:14px;right:16px;opacity:0.45;pointer-events:none;">
         </div>
 
         <div class="widget lb-widget">
@@ -877,6 +1140,7 @@
           <div class="lb-films" id="lb-films">
             <div style="color:rgba(255,255,255,0.4);font-size:0.85rem;">Loading...</div>
           </div>
+          <img src="https://cdn.simpleicons.org/letterboxd/2a4a35" width="16" height="16" alt="Letterboxd" style="position:absolute;bottom:14px;right:16px;opacity:0.45;pointer-events:none;">
         </div>
       </div>
     </div>
@@ -884,25 +1148,142 @@
   </section>
 
   <section id="about">
-    <div class="text-box">
-      <h2>About Me</h2>
-      <p>I am a student at WashU who loves anything math, neuroscience or AI. I am currently doing research, learning ML, watching movies, and exploring the world around me. Last week I visited SF for the first time and found myself entranced. The passion, determination, and drive to be the best that I found in that city has sparked an insatiable desire to fully immerse myself in that culture.</p>
-    </div>
-  </section>
-
-  <section id="research">
-    <div class="research-content">
+    <div class="about-layout">
       <div class="text-box">
-        <h2>Research</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.</p>
+        <h2>About Me</h2>
+        <p>I am a student at WashU who loves anything math, neuroscience or AI. I am currently doing research, learning ML, watching movies, and exploring the world around me. Last week I visited SF for the first time and found myself entranced. The passion, determination, and drive to be the best that I found in that city has sparked an insatiable desire to fully immerse myself in that culture.</p>
+      </div>
+
+      <div class="bookshelf-section">
+        <div class="widget-label">Bookshelf</div>
+        <div class="bookshelf">
+          <div class="shelf-books">
+
+            <div class="book" style="--c:#2a4a35;--h:194px">
+              <div class="book-spine"><span>Thus Spoke Zarathustra</span></div>
+              <div class="book-popup">
+                <div class="book-popup-title">Thus Spoke Zarathustra</div>
+                <div class="book-popup-author">Friedrich Nietzsche</div>
+                <div class="book-popup-note">God is dead — now what?</div>
+              </div>
+            </div>
+
+            <div class="book" style="--c:#1a3425;--h:172px">
+              <div class="book-spine"><span>The Stranger</span></div>
+              <div class="book-popup">
+                <div class="book-popup-title">The Stranger</div>
+                <div class="book-popup-author">Albert Camus</div>
+                <div class="book-popup-note">The absurdity of existence in 123 pages</div>
+              </div>
+            </div>
+
+            <div class="book" style="--c:#3d6b50;--h:180px">
+              <div class="book-spine"><span>Of Mice and Men</span></div>
+              <div class="book-popup">
+                <div class="book-popup-title">Of Mice and Men</div>
+                <div class="book-popup-author">John Steinbeck</div>
+                <div class="book-popup-note">The best laid plans of mice and men</div>
+              </div>
+            </div>
+
+            <div class="book" style="--c:#56826a;--h:188px">
+              <div class="book-spine"><span>Stoner</span></div>
+              <div class="book-popup">
+                <div class="book-popup-title">Stoner</div>
+                <div class="book-popup-author">John Williams</div>
+                <div class="book-popup-note">A quiet life, fully felt</div>
+              </div>
+            </div>
+
+            <div class="book" style="--c:#2a4a35;--h:175px">
+              <div class="book-spine"><span>The Great Gatsby</span></div>
+              <div class="book-popup">
+                <div class="book-popup-title">The Great Gatsby</div>
+                <div class="book-popup-author">F. Scott Fitzgerald</div>
+                <div class="book-popup-note">So we beat on, boats against the current</div>
+              </div>
+            </div>
+
+            <div class="book" style="--c:#4a7a5a;--h:196px">
+              <div class="book-spine"><span>Eragon</span></div>
+              <div class="book-popup">
+                <div class="book-popup-title">Eragon</div>
+                <div class="book-popup-author">Christopher Paolini</div>
+                <div class="book-popup-note">Written at 15 — proof that age is no excuse</div>
+              </div>
+            </div>
+
+            <div class="book" style="--c:#1a3425;--h:183px">
+              <div class="book-spine"><span>The Hobbit</span></div>
+              <div class="book-popup">
+                <div class="book-popup-title">The Hobbit</div>
+                <div class="book-popup-author">J.R.R. Tolkien</div>
+                <div class="book-popup-note">In a hole in the ground there lived a hobbit</div>
+              </div>
+            </div>
+
+            <div class="book" style="--c:#4a5a35;--h:168px">
+              <div class="book-spine"><span>Meditations</span></div>
+              <div class="book-popup">
+                <div class="book-popup-title">Meditations</div>
+                <div class="book-popup-author">Marcus Aurelius</div>
+                <div class="book-popup-note">Private notes from an emperor who never meant to publish them</div>
+              </div>
+            </div>
+
+            <div class="book" style="--c:#3d6b50;--h:200px">
+              <div class="book-spine"><span>Dune</span></div>
+              <div class="book-popup">
+                <div class="book-popup-title">Dune</div>
+                <div class="book-popup-author">Frank Herbert</div>
+                <div class="book-popup-note">The spice must flow</div>
+              </div>
+            </div>
+
+          </div>
+          <div class="shelf-plank"></div>
+        </div>
       </div>
     </div>
   </section>
 
-  </div><!-- end vanta-bg -->
+  <section id="research">
+    <div class="text-box">
+      <h2>Research</h2>
+      <p>Chasing my interest in neuroscience, I joined a lab at the start of my freshman year at the WashU med school working under Dr. Benjamin Kay and Dr. Rebecca Schwarzlose. At the lab I have been developing hierarchical Bayesian models around splines and gamma distributions to map out nonlinear relationships in fMRI data. Since beginning this work, I have gained much knowledge into programming, modeling, data science and more. I am excited to continue working with these amazing doctors and to apply this knowledge into future ventures.</p>
+    </div>
+
+    <div class="beyond-lab-box">
+      <h2>Beyond the Lab</h2>
+      <div class="project-items">
+
+        <div class="project-item">
+          <div class="project-item-title">Web-based Diplomacy Game</div>
+          <p>Building a web-based implementation of the classic strategy game, with a Python/FastAPI backend and a Next.js frontend. The twist is that the other players are AI agents powered by Gemini, which makes for some interesting games.</p>
+        </div>
+
+        <div class="project-item">
+          <div class="project-item-title">Events Coordinator, Best Buddies</div>
+          <p>I help plan and run events for our chapter at WashU, which works to build friendships and create community for people with intellectual and developmental disabilities. The role is part logistics, part making sure everyone who shows up actually feels welcome.</p>
+        </div>
+
+        <div class="project-item">
+          <div class="project-item-title">FICO Stock Pitch</div>
+          <p>An equity research project I put together for my investment club — a full write-up on Fair Isaac Corporation with a DCF model, WACC calculation, and comparable companies analysis to land on a target price and investment recommendation.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
 
   <section id="photography">
-    <div class="photo-grid" id="photo-grid">
+    <div style="padding: 48px 64px 24px 64px;">
+      <h2 style="color:#2a4a35;">Photography</h2>
+    </div>
+  </section>
+
+
+  <div class="photo-grid" id="photo-grid">
       <div class="photo-item" data-src="/webImages/IMG_0982.JPG"><img src="/webImages/IMG_0982.JPG" alt=""></div>
       <div class="photo-item" data-src="/webImages/IMG_1451.JPG"><img src="/webImages/IMG_1451.JPG" alt=""></div>
       <div class="photo-item" data-src="/webImages/IMG_0771.JPG"><img src="/webImages/IMG_0771.JPG" alt=""></div>
@@ -919,8 +1300,7 @@
 <div class="photo-item" data-src="/webImages/IMG_1013.JPG"><img src="/webImages/IMG_1013.JPG" alt=""></div>
       <div class="photo-item" data-src="/webImages/IMG_2254.JPG"><img src="/webImages/IMG_2254.JPG" alt=""></div>
       <div class="photo-item" data-src="/webImages/IMG_2645.JPG"><img src="/webImages/IMG_2645.JPG" alt=""></div>
-    </div>
-  </section>
+  </div>
 
   <!-- Lightbox -->
   <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
@@ -1197,6 +1577,7 @@
       { name: 'Sweden',         coords: [18.068,   59.329] },
       { name: 'Ireland',        coords: [-6.267,   53.333] },
       { name: 'United Kingdom', coords: [-0.118,   51.509] },
+      { name: 'Utah',           coords: [-113.026, 37.268] },
     ];
 
     const PLACE_MEMORIES = {
@@ -1226,7 +1607,8 @@
       Czechia: 'Biking through the countryside in a storm',
       Sweden: 'Seeing Stockholm with my mom',
       Ireland: 'Long talk with my dad',
-      'United Kingdom': 'Really good pastries'
+      'United Kingdom': 'Really good pastries',
+      Utah: 'I survived Angels Landing'
     };
 
     async function buildMap() {
@@ -1316,6 +1698,7 @@
       alignment: 40,
       cohesion: 40
     });
+
   </script>
 </body>
 </html>
