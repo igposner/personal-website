@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Isaac Posner</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Jost:wght@300;400;500&display=swap">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.birds.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      background: #d8ede0;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 32px;
+      position: sticky;
+      top: 0;
+      background: #d8ede0;
+      border-bottom: 1px solid #b8d8c4;
+      z-index: 100;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #2a4a35;
+      margin-left: 24px;
+    }
+
+    nav a.brand {
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-left: 0;
+    }
+
+    .nav-icons {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .nav-icons a {
+      margin-left: 0;
+      font-size: 1.2rem;
+      color: #2a4a35;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .nav-icons a:hover {
+      opacity: 1;
+    }
+
+    /* ── Shared section base ── */
+    section {
+      padding: 64px 32px;
+    }
+
+    /* ── Vanta wrapper ── */
+    #vanta-bg {
+      background: #d8ede0;
+    }
+
+    /* ── Home ── */
+    #home {
+      min-height: 85vh;
+      background: transparent;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 64px;
+      color: #2a4a35;
+    }
+
+    .home-main {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 80px;
+    }
+
+    .home-name {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+    }
+
+    .name-first,
+    .name-last {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.5rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    #home .widgets {
+      margin-top: 0;
+      flex-direction: column;
+    }
+
+    .home-links {
+      display: flex;
+      gap: 40px;
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .home-links a {
+      text-decoration: none;
+      color: #2a4a35;
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .home-links a:hover {
+      opacity: 1;
+    }
+
+    /* ── About ── */
+    #about {
+      min-height: 55vh;
+      background: transparent;
+      color: #2a4a35;
+    }
+
+    #about h2 {
+      color: #2a4a35;
+      margin-bottom: 16px;
+    }
+
+    #about p {
+      max-width: 600px;
+      line-height: 1.7;
+      color: #4a7a5a !important;
+    }
+
+    /* ── Research ── */
+    #research {
+      min-height: 55vh;
+      background: transparent;
+      color: #2a4a35;
+    }
+
+    #research h2 {
+      color: #2a4a35;
+      margin-bottom: 16px;
+    }
+
+    #research p {
+      max-width: 600px;
+      line-height: 1.7;
+      color: #4a7a5a !important;
+    }
+
+    /* ── Photography / Justified Collage ── */
+    #photography {
+      padding: 0;
+    }
+
+    .photo-grid {
+      position: relative;
+      width: 100%;
+    }
+
+    .photo-item {
+      position: absolute;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .photo-item img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+
+    .photo-item:hover img {
+      transform: scale(1.04);
+    }
+
+    /* ── Lightbox ── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lightbox.open {
+      display: flex;
+    }
+
+    .lightbox-img {
+      max-width: 90vw;
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: 6px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+    }
+
+    .lightbox-close {
+      position: fixed;
+      top: 20px;
+      right: 28px;
+      color: white;
+      font-size: 2rem;
+      cursor: pointer;
+      line-height: 1;
+      opacity: 0.8;
+      background: none;
+      border: none;
+      z-index: 1001;
+    }
+
+    .lightbox-close:hover { opacity: 1; }
+
+    /* ── Widgets ── */
+    .widgets {
+      display: flex;
+      gap: 24px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+
+    .widget {
+      background: #f9f9f9;
+      border: 1px solid #eee;
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .widget-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #999;
+      margin-bottom: 12px;
+    }
+
+    /* Spotify */
+    .spotify-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 280px;
+    }
+
+    .spotify-card img {
+      width: 56px;
+      height: 56px;
+      border-radius: 6px;
+      object-fit: cover;
+      background: #ddd;
+    }
+
+    .spotify-card .no-art {
+      width: 56px;
+      height: 56px;
+      border-radius: 6px;
+      background: #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+
+    .spotify-info .title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #222;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 180px;
+    }
+
+    .spotify-info .artist {
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: 2px;
+    }
+
+    .spotify-info .status {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 6px;
+      font-size: 0.75rem;
+      color: #999;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #ccc;
+    }
+
+    .dot.live {
+      background: #1DB954;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
+    }
+
+    /* Letterboxd */
+    .lb-films {
+      display: flex;
+      gap: 12px;
+    }
+
+    .lb-film a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .lb-film img {
+      width: 70px;
+      height: 105px;
+      border-radius: 6px;
+      object-fit: cover;
+      background: #ddd;
+      display: block;
+    }
+
+    .lb-film .film-no-poster {
+      width: 70px;
+      height: 105px;
+      border-radius: 6px;
+      background: #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+
+    .lb-film .film-title {
+      font-size: 0.7rem;
+      color: #555;
+      margin-top: 5px;
+      width: 70px;
+      text-align: center;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.3;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="#home" class="brand">Isaac Posner</a>
+    <div class="nav-icons">
+      <a href="https://www.instagram.com/posner_photography" target="_blank" title="Photography Instagram"><i class="fa-solid fa-camera"></i></a>
+      <a href="https://www.linkedin.com/in/isaacposner14" target="_blank" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+      <a href="mailto:igposner06@gmail.com" title="Email"><i class="fa-solid fa-envelope"></i></a>
+    </div>
+  </nav>
+
+  <div id="vanta-bg">
+  <section id="home">
+    <div class="home-main">
+      <div class="home-name">
+        <div class="name-first">Isaac</div>
+        <div class="name-last">Posner</div>
+      </div>
+
+      <div class="widgets">
+      <!-- Spotify Widget -->
+      <div class="widget">
+        <div class="widget-label">Now Playing</div>
+        <div class="spotify-card" id="spotify-card">
+          <div class="no-art">♫</div>
+          <div class="spotify-info">
+            <div class="title">Loading...</div>
+            <div class="artist"></div>
+            <div class="status"><span class="dot"></span><span class="status-text">Checking</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Letterboxd Widget -->
+      <div class="widget">
+        <div class="widget-label">Letterboxd Favorites</div>
+        <div class="lb-films" id="lb-films">
+          <div style="color:rgba(255,255,255,0.4);font-size:0.85rem;">Loading...</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="home-links">
+      <a href="#about">About Me</a>
+      <a href="#research">Research</a>
+      <a href="#photography">Photography</a>
+    </div>
+  </section>
+
+  <section id="about">
+    <h2>About Me</h2>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+  </section>
+
+  <section id="research">
+    <h2>Research</h2>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.</p>
+  </section>
+
+  </div><!-- end vanta-bg -->
+
+  <section id="photography">
+    <div class="photo-grid" id="photo-grid">
+      <div class="photo-item" data-src="/webImages/IMG_0982.JPG"><img src="/webImages/IMG_0982.JPG" alt=""></div>
+      <div class="photo-item" data-src="/webImages/IMG_1451.JPG"><img src="/webImages/IMG_1451.JPG" alt=""></div>
+      <div class="photo-item" data-src="/webImages/IMG_0771.JPG"><img src="/webImages/IMG_0771.JPG" alt=""></div>
+      <div class="photo-item" data-src="/webImages/IMG_2567.JPG"><img src="/webImages/IMG_2567.JPG" alt=""></div>
+      <div class="photo-item" data-src="/webImages/IMG_1332.JPG"><img src="/webImages/IMG_1332.JPG" alt=""></div>
+      <div class="photo-item" data-src="/webImages/IMG_1975.JPG"><img src="/webImages/IMG_1975.JPG" alt=""></div>
+      <div class="photo-item" data-src="/webImages/IMG_1024.JPG"><img src="/webImages/IMG_1024.JPG" alt=""></div>
+      <div class="photo-item" data-src="/webImages/IMG_1434.JPG"><img src="/webImages/IMG_1434.JPG" alt=""></div>
+      <div class="photo-item" data-src="/webImages/IMG_0888.JPG"><img src="/webImages/IMG_0888.JPG" alt=""></div>
+      <div class="photo-item" data-src="/webImages/IMG_0484.JPG"><img src="/webImages/IMG_0484.JPG" alt=""></div>
+      <div class="photo-item" data-src="/webImages/IMG_1983.JPG"><img src="/webImages/IMG_1983.JPG" alt=""></div>
+      <div class="photo-item" data-src="/webImages/IMG_0691.JPG"><img src="/webImages/IMG_0691.JPG" alt=""></div>
+      <div class="photo-item" data-src="/webImages/IMG_1606.JPG"><img src="/webImages/IMG_1606.JPG" alt=""></div>
+<div class="photo-item" data-src="/webImages/IMG_1013.JPG"><img src="/webImages/IMG_1013.JPG" alt=""></div>
+      <div class="photo-item" data-src="/webImages/IMG_2254.JPG"><img src="/webImages/IMG_2254.JPG" alt=""></div>
+      <div class="photo-item" data-src="/webImages/IMG_2645.JPG"><img src="/webImages/IMG_2645.JPG" alt=""></div>
+    </div>
+  </section>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+    <button class="lightbox-close" onclick="closeLightbox(event)">&times;</button>
+    <img class="lightbox-img" id="lightbox-img" src="" alt="">
+  </div>
+
+  <script>
+    /* ── Spotify / Letterboxd widgets ── */
+    async function updateSpotify() {
+      try {
+        const data = await fetch('/api/now-playing').then(r => r.json());
+        const card = document.getElementById('spotify-card');
+        const artEl = card.querySelector('img, .no-art');
+        const titleEl = card.querySelector('.title');
+        const artistEl = card.querySelector('.artist');
+        const dot = card.querySelector('.dot');
+        const statusText = card.querySelector('.status-text');
+
+        if (data.playing && data.title) {
+          if (data.albumArt) {
+            if (artEl.tagName !== 'IMG') {
+              const img = document.createElement('img');
+              img.src = data.albumArt;
+              img.alt = data.title;
+              artEl.replaceWith(img);
+            } else {
+              artEl.src = data.albumArt;
+            }
+          }
+          titleEl.textContent = data.title;
+          artistEl.textContent = data.artist;
+          dot.className = 'dot live';
+          statusText.textContent = 'Live';
+          card.style.cursor = 'pointer';
+          card.onclick = () => window.open(data.songUrl, '_blank');
+        } else {
+          titleEl.textContent = 'Not playing';
+          artistEl.textContent = '';
+          dot.className = 'dot';
+          statusText.textContent = 'Offline';
+          card.onclick = null;
+          card.style.cursor = 'default';
+        }
+      } catch (e) {}
+    }
+
+    async function updateLetterboxd() {
+      try {
+        const films = await fetch('/api/letterboxd-favorites').then(r => r.json());
+        const container = document.getElementById('lb-films');
+        if (!films.length) { container.innerHTML = '<div style="color:#aaa;font-size:0.85rem;">No favorites found</div>'; return; }
+        container.innerHTML = films.map(f => `
+          <div class="lb-film">
+            <a href="${f.url}" target="_blank">
+              ${f.poster
+                ? `<img src="${f.poster}" alt="${f.title}">`
+                : `<div class="film-no-poster">🎬</div>`}
+              <div class="film-title">${f.title}</div>
+            </a>
+          </div>
+        `).join('');
+      } catch (e) {}
+    }
+
+    updateSpotify();
+    updateLetterboxd();
+    setInterval(updateSpotify, 30000);
+    setInterval(updateLetterboxd, 10 * 60 * 1000);
+
+    /* ── Lightbox ── */
+    function openLightbox(src) {
+      const lb = document.getElementById('lightbox');
+      document.getElementById('lightbox-img').src = src;
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox(e) {
+      if (e && e.target === document.getElementById('lightbox-img')) return;
+      document.getElementById('lightbox').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+    /* ── Justified Collage ── */
+    function buildCollage() {
+      const container = document.getElementById('photo-grid');
+      const W = container.offsetWidth || window.innerWidth;
+      if (!W) return;
+
+      const gap = 3;
+      const targetH = 320;
+
+      const items = [...container.querySelectorAll('.photo-item')].map(el => {
+        const img = el.querySelector('img');
+        const aspect = (img.naturalWidth && img.naturalHeight)
+          ? img.naturalWidth / img.naturalHeight
+          : 1.5;
+        return { el, aspect };
+      });
+
+      // Greedily pack photos into rows; finalize a row when its height hits targetH.
+      const rows = [];
+      let row = [], rowAspSum = 0;
+      items.forEach(item => {
+        row.push(item);
+        rowAspSum += item.aspect;
+        const h = (W - gap * (row.length - 1)) / rowAspSum;
+        if (h <= targetH) {
+          rows.push({ items: [...row], h });
+          row = [];
+          rowAspSum = 0;
+        }
+      });
+      if (row.length) {
+        const h = Math.min(targetH, (W - gap * (row.length - 1)) / rowAspSum);
+        rows.push({ items: row, h });
+      }
+
+      // Absolutely position every photo at its exact aspect-ratio dimensions.
+      let y = 0;
+      rows.forEach(({ items, h }, rowIdx) => {
+        const rowW = items.reduce((s, i) => s + Math.round(i.aspect * h), 0) + gap * (items.length - 1);
+        const isLast = rowIdx === rows.length - 1;
+        let x = isLast ? Math.round((W - rowW) / 2) : 0;
+        items.forEach(item => {
+          const w = item.aspect * h;
+          item.el.style.left   = Math.round(x) + 'px';
+          item.el.style.top    = Math.round(y) + 'px';
+          item.el.style.width  = Math.round(w) + 'px';
+          item.el.style.height = Math.round(h) + 'px';
+          item.el.onclick = () => openLightbox(item.el.dataset.src);
+          x += Math.round(w) + gap;
+        });
+        y += Math.round(h) + gap;
+      });
+
+      container.style.height = (y - gap) + 'px';
+    }
+
+    // Run immediately so images appear at once, then again after each
+    // image loads so aspect ratios are accurate.
+    buildCollage();
+
+    document.querySelectorAll('.photo-item img').forEach(img => {
+      if (!img.complete) {
+        img.addEventListener('load',  buildCollage);
+        img.addEventListener('error', buildCollage);
+      }
+    });
+
+    window.addEventListener('resize', buildCollage);
+
+    /* ── Vanta Birds ── */
+    VANTA.BIRDS({
+      el: '#vanta-bg',
+      THREE: THREE,
+      mouseControls: true,
+      touchControls: true,
+      backgroundColor: 0xd8ede0,
+      color1: 0x2a4a35,
+      color2: 0x4a7a5a,
+      colorMode: 'lerp',
+      birdSize: 1.2,
+      quantity: 4,
+      speedFactor: 1.0,
+      separation: 60,
+      alignment: 40,
+      cohesion: 40
+    });
+  </script>
+</body>
+</html>
