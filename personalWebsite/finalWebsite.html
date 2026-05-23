@@ -6,9 +6,11 @@
   <title>Isaac Posner</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Jost:wght@300;400;500&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&family=Lora:wght@400;500&family=Bangers&display=swap">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.birds.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
   <style>
     * {
       margin: 0;
@@ -17,13 +19,13 @@
     }
 
     body {
-      font-family: 'Jost', sans-serif;
-      font-weight: 300;
+      font-family: 'Lora', serif;
+      font-weight: 400;
       background: #d8ede0;
     }
 
     h1, h2, h3 {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Fraunces', serif;
     }
 
     nav {
@@ -34,7 +36,7 @@
       position: sticky;
       top: 0;
       background: #d8ede0;
-      border-bottom: 1px solid #b8d8c4;
+      border-bottom: 2px solid #2a4a35;
       z-index: 100;
     }
 
@@ -92,11 +94,70 @@
 
 
     .home-main {
+      --left-col-width: 481.12px;
+      --right-col-width: 480.15px;
+      --stack-height: 506px;
+      --name-height: 110px;
+      --map-width: 481.12px;
+      --map-height: 360.84px;
+      --spotify-height: 230px;
+      --right-gap: 15.52px;
+      --letterboxd-height: 260px;
       display: flex;
-      flex-direction: row;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
-      gap: 80px;
+      gap: var(--right-gap);
+      max-width: calc(var(--left-col-width) + var(--right-col-width) + var(--right-gap));
+      width: 100%;
+      position: relative;
+      align-self: flex-start;
+    }
+
+    .home-left,
+    .home-right {
+      height: var(--stack-height);
+      position: relative;
+      z-index: 1;
+    }
+
+    .home-left {
+      width: var(--left-col-width);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .home-right {
+      width: var(--right-col-width);
+      display: flex;
+      flex-direction: column;
+      gap: var(--right-gap);
+    }
+
+    .home-name {
+      height: var(--name-height);
+      position: relative;
+      z-index: 1;
+    }
+
+    .spotify-cell {
+      width: var(--right-col-width);
+      height: var(--spotify-height);
+      position: relative;
+      z-index: 1;
+    }
+
+    .map-widget {
+      width: var(--map-width);
+      height: var(--map-height);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .lb-widget {
+      width: var(--right-col-width);
+      height: var(--letterboxd-height);
+      overflow: visible;
     }
 
     .home-name {
@@ -107,15 +168,10 @@
 
     .name-first,
     .name-last {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Fraunces', serif;
       font-size: 3.5rem;
       font-weight: 700;
       letter-spacing: -0.01em;
-    }
-
-    #home .widgets {
-      margin-top: 0;
-      flex-direction: column;
     }
 
     .home-links {
@@ -161,10 +217,34 @@
 
     .text-box {
       background: #d8ede0;
-      border: 1px solid #b8d8c4;
-      box-shadow: 0 4px 24px rgba(42,74,53,0.08);
+      border: 2px solid #2a4a35;
+      box-shadow: 4px 4px 0 #2a4a35;
       padding: 32px 40px;
       max-width: 680px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .text-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 220px; height: 200px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='7'%3E%3Ccircle cx='3.5' cy='3.5' r='2.4' fill='%232a4a35' fill-opacity='0.16'/%3E%3C/svg%3E");
+      -webkit-mask-image: radial-gradient(ellipse 100% 100% at top left, black 20%, transparent 72%);
+      mask-image: radial-gradient(ellipse 100% 100% at top left, black 20%, transparent 72%);
+      pointer-events: none;
+    }
+
+    .text-box::after {
+      content: '';
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 180px; height: 160px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Ccircle cx='3' cy='3' r='2.1' fill='%232a4a35' fill-opacity='0.16'/%3E%3C/svg%3E");
+      -webkit-mask-image: radial-gradient(ellipse 100% 100% at bottom right, black 20%, transparent 72%);
+      mask-image: radial-gradient(ellipse 100% 100% at bottom right, black 20%, transparent 72%);
+      pointer-events: none;
     }
 
     /* ── Research layout ── */
@@ -282,9 +362,34 @@
 
     .widget {
       background: #d8ede0;
-      border: 1px solid #b8d8c4;
-      box-shadow: 0 4px 24px rgba(42,74,53,0.08);
+      border: 2px solid #2a4a35;
+      box-shadow: 4px 4px 0 #2a4a35;
       padding: 20px;
+      position: relative;
+    }
+
+    .widget::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 170px; height: 150px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Ccircle cx='3' cy='3' r='2.2' fill='%232a4a35' fill-opacity='0.18'/%3E%3C/svg%3E");
+      -webkit-mask-image: radial-gradient(ellipse 100% 100% at top right, black 20%, transparent 72%);
+      mask-image: radial-gradient(ellipse 100% 100% at top right, black 20%, transparent 72%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .widget::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 130px; height: 120px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='5' height='5'%3E%3Ccircle cx='2.5' cy='2.5' r='1.8' fill='%232a4a35' fill-opacity='0.18'/%3E%3C/svg%3E");
+      -webkit-mask-image: radial-gradient(ellipse 100% 100% at bottom left, black 20%, transparent 72%);
+      mask-image: radial-gradient(ellipse 100% 100% at bottom left, black 20%, transparent 72%);
+      pointer-events: none;
+      z-index: 0;
     }
 
     .widget-label {
@@ -300,42 +405,57 @@
       display: flex;
       align-items: center;
       gap: 14px;
-      width: 280px;
+      width: 100%;
+      position: relative;
+      z-index: 1;
     }
 
     .spotify-card img {
-      width: 56px;
-      height: 56px;
-      border-radius: 6px;
+      width: 115px;
+      height: 115px;
+      border-radius: 4px;
       object-fit: cover;
       background: #ddd;
+      border: 2px solid #2a4a35;
+      box-shadow: 2px 2px 0 #2a4a35;
+      flex-shrink: 0;
     }
 
     .spotify-card .no-art {
-      width: 56px;
-      height: 56px;
-      border-radius: 6px;
+      width: 115px;
+      height: 115px;
+      border-radius: 4px;
       background: #e0e0e0;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.4rem;
+      font-size: 2rem;
+      border: 2px solid #2a4a35;
+      box-shadow: 2px 2px 0 #2a4a35;
+      flex-shrink: 0;
+    }
+
+    .spotify-info {
+      min-width: 0;
+      flex: 1;
     }
 
     .spotify-info .title {
       font-weight: 600;
-      font-size: 0.95rem;
+      font-size: 1.15rem;
       color: #222;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 180px;
     }
 
     .spotify-info .artist {
-      font-size: 0.8rem;
+      font-size: 0.9rem;
       color: #666;
       margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .spotify-info .status {
@@ -367,7 +487,9 @@
     /* Letterboxd */
     .lb-films {
       display: flex;
-      gap: 12px;
+      gap: 19px;
+      justify-content: center;
+      width: 100%;
     }
 
     .lb-film a {
@@ -376,30 +498,34 @@
     }
 
     .lb-film img {
-      width: 70px;
-      height: 105px;
-      border-radius: 6px;
+      width: 96px;
+      height: 144px;
+      border-radius: 4px;
       object-fit: cover;
       background: #ddd;
       display: block;
+      border: 2px solid #2a4a35;
+      box-shadow: 3px 3px 0 #2a4a35;
     }
 
     .lb-film .film-no-poster {
-      width: 70px;
-      height: 105px;
-      border-radius: 6px;
+      width: 96px;
+      height: 144px;
+      border-radius: 4px;
       background: #e0e0e0;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.4rem;
+      font-size: 2rem;
+      border: 2px solid #2a4a35;
+      box-shadow: 3px 3px 0 #2a4a35;
     }
 
     .lb-film .film-title {
       font-size: 0.7rem;
       color: #555;
       margin-top: 5px;
-      width: 70px;
+      width: 96px;
       text-align: center;
       display: -webkit-box;
       -webkit-line-clamp: 2;
@@ -424,11 +550,11 @@
       border: 2px solid #2a4a35;
       border-radius: 10px;
       padding: 10px 12px;
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-size: 0.78rem;
+      font-family: 'Bangers', cursive;
+      font-size: 1rem;
+      letter-spacing: 0.06em;
       color: #2a4a35;
-      line-height: 1.5;
+      line-height: 1.4;
       text-align: center;
       z-index: 200;
       pointer-events: none;
@@ -458,13 +584,176 @@
 
     .film-bubble-attr {
       margin-top: 6px;
-      font-style: normal;
-      font-size: 0.68rem;
-      opacity: 0.65;
+      font-family: 'Lora', serif;
+      font-size: 0.62rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      opacity: 0.6;
     }
 
     .lb-film:hover .film-bubble {
       display: block;
+    }
+
+    /* ── Stats bubble ── */
+    .widget-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .widget-header .widget-label {
+      margin-bottom: 0;
+    }
+
+    .stats-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #2a4a35;
+      font-size: 2.4rem;
+      opacity: 1;
+      padding: 0;
+      line-height: 1;
+      transition: opacity 0.2s;
+      align-self: flex-end;
+      margin-bottom: -6px;
+    }
+
+    .stats-btn:hover { opacity: 0.7; }
+
+    .stats-bubble {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: calc(100% + 12px);
+      width: 210px;
+      background: #fff;
+      border: 2px solid #2a4a35;
+      box-shadow: 4px 4px 0 #2a4a35;
+      padding: 14px 16px;
+      z-index: 300;
+      overflow: hidden;
+    }
+
+    .stats-bubble::before {
+      content: '';
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 80px; height: 80px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='5' height='5'%3E%3Ccircle cx='2.5' cy='2.5' r='1.9' fill='%232a4a35' fill-opacity='0.18'/%3E%3C/svg%3E");
+      -webkit-mask-image: radial-gradient(ellipse 100% 100% at bottom right, black 20%, transparent 75%);
+      mask-image: radial-gradient(ellipse 100% 100% at bottom right, black 20%, transparent 75%);
+      pointer-events: none;
+    }
+
+    .stats-bubble.open { display: block; }
+
+    .stats-bubble h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 0.85rem;
+      color: #2a4a35;
+      margin-bottom: 10px;
+    }
+
+    .stats-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 4px 0;
+      border-bottom: 1px solid #b8d8c4;
+      font-size: 0.8rem;
+      color: #2a4a35;
+    }
+
+    .stats-row:last-child { border-bottom: none; }
+
+    .stats-row .mins {
+      font-size: 0.7rem;
+      opacity: 0.6;
+    }
+
+    #world-map {
+      position: relative;
+      overflow: hidden;
+      flex: 1;
+      min-height: 200px;
+    }
+
+    #world-map svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .map-widget::before,
+    .map-widget::after {
+      display: none;
+    }
+
+    .map-pin {
+      cursor: pointer;
+    }
+
+    .map-pin circle {
+      transition: r 0.15s ease;
+    }
+
+    .map-pin:hover circle:first-child {
+      r: 7;
+    }
+
+    .map-tooltip {
+      display: none;
+      position: absolute;
+      left: 12px;
+      bottom: 12px;
+      background: #fff;
+      border: 2px solid #2a4a35;
+      border-radius: 10px;
+      padding: 5px 10px;
+      font-family: 'Bangers', cursive;
+      font-size: 0.9rem;
+      letter-spacing: 0.06em;
+      color: #2a4a35;
+      text-align: center;
+      pointer-events: none;
+      box-shadow: 3px 3px 0 #2a4a35;
+      z-index: 200;
+      white-space: nowrap;
+    }
+
+    .map-tooltip::after {
+      display: none;
+    }
+
+    .map-tooltip::before {
+      display: none;
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 768px) {
+      nav { padding: 12px 16px; }
+      #home { padding: 48px 20px; min-height: auto; align-items: flex-start; }
+      .home-main { flex-direction: column; gap: 24px; position: static; max-width: none; }
+      .home-left, .home-right { width: 100%; height: auto; }
+      .home-left { gap: 24px; }
+      .home-right { gap: 16px; }
+      .home-name { height: auto; }
+      .map-widget { width: 100%; height: auto; aspect-ratio: 4 / 3; }
+      .spotify-cell, .lb-widget { width: 100%; height: auto; min-height: 0; }
+      .name-first, .name-last { font-size: 2.4rem; }
+      .widget { width: 100%; }
+      .spotify-card { width: 100%; }
+      .home-links { position: static; transform: none; flex-direction: column; gap: 16px; margin-top: 40px; align-items: flex-start; }
+      section { padding: 40px 20px; }
+      .text-box { padding: 20px; max-width: 100%; box-shadow: 3px 3px 0 #2a4a35; }
+      #research { padding: 40px 20px; }
+      .lb-films { flex-wrap: wrap; }
+      .film-bubble { width: 150px; font-size: 0.85rem; }
     }
   </style>
 </head>
@@ -483,30 +772,40 @@
   <div id="vanta-bg">
   <section id="home">
     <div class="home-main">
-      <div class="home-name">
-        <div class="name-first">Isaac</div>
-        <div class="name-last">Posner</div>
-      </div>
+      <div class="home-left">
+        <div class="home-name">
+          <div class="name-first">Isaac</div>
+          <div class="name-last">Posner</div>
+        </div>
 
-      <div class="widgets">
-      <!-- Spotify Widget -->
-      <div class="widget">
-        <div class="widget-label">Now Playing</div>
-        <div class="spotify-card" id="spotify-card">
-          <div class="no-art">♫</div>
-          <div class="spotify-info">
-            <div class="title">Loading...</div>
-            <div class="artist"></div>
-            <div class="status"><span class="dot"></span><span class="status-text">Checking</span></div>
-          </div>
+        <div class="widget map-widget">
+          <div class="widget-label">Places I've Been</div>
+          <div id="world-map"><div class="map-tooltip" id="map-tooltip"></div></div>
         </div>
       </div>
 
-      <!-- Letterboxd Widget -->
-      <div class="widget">
-        <div class="widget-label">Letterboxd Favorites</div>
-        <div class="lb-films" id="lb-films">
-          <div style="color:rgba(255,255,255,0.4);font-size:0.85rem;">Loading...</div>
+      <div class="home-right">
+        <div class="widget spotify-cell">
+          <div class="widget-header">
+            <div class="widget-label" id="spotify-label">Now Playing</div>
+            <button class="stats-btn" id="stats-btn" title="Top artists this week">&#9656;</button>
+          </div>
+          <div class="spotify-card" id="spotify-card">
+            <div class="no-art">♫</div>
+            <div class="spotify-info">
+              <div class="title">Loading...</div>
+              <div class="artist"></div>
+              <div class="status"><span class="dot"></span><span class="status-text">Checking</span></div>
+            </div>
+          </div>
+          <div class="stats-bubble" id="stats-bubble"></div>
+        </div>
+
+        <div class="widget lb-widget">
+          <div class="widget-label">Letterboxd Favorites</div>
+          <div class="lb-films" id="lb-films">
+            <div style="color:rgba(255,255,255,0.4);font-size:0.85rem;">Loading...</div>
+          </div>
         </div>
       </div>
     </div>
@@ -658,6 +957,27 @@
     setInterval(updateSpotify, 30000);
     setInterval(updateLetterboxd, 10 * 60 * 1000);
 
+    /* ── Top Artists bubble ── */
+    document.getElementById('stats-btn').addEventListener('click', async e => {
+      e.stopPropagation();
+      const bubble = document.getElementById('stats-bubble');
+      if (bubble.classList.contains('open')) { bubble.classList.remove('open'); return; }
+      bubble.innerHTML = '<div style="font-size:0.75rem;color:#999;">Loading…</div>';
+      bubble.classList.add('open');
+      try {
+        const artists = await fetch('/api/top-artists').then(r => r.json());
+        if (!artists.length) { bubble.innerHTML = '<div style="font-size:0.75rem;color:#999;">No data</div>'; return; }
+        bubble.innerHTML = '<h3>Top artists · 7 days</h3>' +
+          artists.map(a => `<div class="stats-row"><span>${a.name}</span><span class="mins">${a.plays} plays</span></div>`).join('');
+      } catch (e) {
+        bubble.innerHTML = '<div style="font-size:0.75rem;color:#999;">Error</div>';
+      }
+    });
+
+    document.addEventListener('click', () => {
+      document.getElementById('stats-bubble')?.classList.remove('open');
+    });
+
     /* ── Lightbox ── */
     let lbIdx = 0;
 
@@ -769,6 +1089,103 @@
 
     window.addEventListener('resize', buildCollage);
 
+
+    /* ── World Map ── */
+    const PLACES = [
+      { name: 'Missouri',       coords: [-90.197,  38.627] },
+      { name: 'California',     coords: [-122.419, 37.774] },
+      { name: 'Mexico',         coords: [-86.851,  21.161] },
+      { name: 'Massachusetts',  coords: [-71.059,  42.360] },
+      { name: 'Canada',         coords: [-79.383,  43.653] },
+      { name: 'Oregon',         coords: [-122.676, 45.523] },
+      { name: 'Washington',     coords: [-122.332, 47.606] },
+      { name: 'New York',       coords: [-74.006,  40.713] },
+      { name: 'Illinois',       coords: [-87.629,  41.878] },
+      { name: 'Florida',        coords: [-80.191,  25.774] },
+      { name: 'California',     coords: [-118.244, 34.052] },
+      { name: 'Arizona',        coords: [-112.074, 33.449] },
+      { name: 'Nevada',         coords: [-115.137, 36.175] },
+      { name: 'Michigan',       coords: [-83.045,  42.331] },
+      { name: 'Indiana',        coords: [-86.158,  39.768] },
+      { name: 'Ohio',           coords: [-82.999,  39.961] },
+      { name: 'Pennsylvania',   coords: [-75.165,  39.952] },
+      { name: 'North Carolina', coords: [-78.639,  35.787] },
+      { name: 'Wisconsin',      coords: [-87.906,  43.039] },
+      { name: 'France',         coords: [2.349,    48.864] },
+      { name: 'Germany',        coords: [13.405,   52.520] },
+      { name: 'Switzerland',    coords: [8.541,    47.376] },
+      { name: 'Austria',        coords: [16.363,   48.210] },
+      { name: 'Czechia',        coords: [14.418,   50.075] },
+      { name: 'Sweden',         coords: [18.068,   59.329] },
+      { name: 'Ireland',        coords: [-6.267,   53.333] },
+      { name: 'United Kingdom', coords: [-0.118,   51.509] },
+    ];
+
+    async function buildMap() {
+      const container = document.getElementById('world-map');
+      if (!container) return;
+      d3.select('#world-map svg').remove();
+
+      const svg = d3.select('#world-map').append('svg')
+        .style('width', '100%').style('height', '100%').style('display', 'block');
+
+      const { width: W, height: H } = svg.node().getBoundingClientRect();
+      if (!W || !H) return;
+
+      svg.attr('viewBox', `0 0 ${W} ${H}`);
+
+      const projection = d3.geoNaturalEarth1()
+        .fitSize([W, H], { type: 'Sphere' });
+      projection.scale(projection.scale() * 1.24).translate([W / 2, H / 2]);
+      const path = d3.geoPath().projection(projection);
+
+      svg.append('rect').attr('width', W).attr('height', H).attr('fill', '#d8ede0');
+
+      try {
+        const world = await d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json');
+        const countries = topojson.feature(world, world.objects.countries);
+        const borders   = topojson.mesh(world, world.objects.countries, (a, b) => a !== b);
+
+        svg.append('g').selectAll('path')
+          .data(countries.features).join('path')
+          .attr('d', path)
+          .attr('fill', '#aec9b8')
+          .attr('stroke', 'none');
+
+        svg.append('path').datum(borders)
+          .attr('d', path).attr('fill', 'none')
+          .attr('stroke', '#2a4a35').attr('stroke-width', 0.5);
+
+        svg.append('path').datum(d3.geoGraticule()())
+          .attr('d', path).attr('fill', 'none')
+          .attr('stroke', '#2a4a35').attr('stroke-width', 0.2).attr('stroke-opacity', 0.3);
+
+        svg.append('path').datum({ type: 'Sphere' })
+          .attr('d', path).attr('fill', 'none')
+          .attr('stroke', '#2a4a35').attr('stroke-width', 1.2);
+
+        PLACES.forEach(({ name, coords }) => {
+          const pt = projection(coords);
+          if (!pt) return;
+          const [x, y] = pt;
+          const g = svg.append('g').attr('transform', `translate(${x},${y})`).attr('class', 'map-pin');
+          g.append('circle').attr('r', 5).attr('fill', '#c0392b').attr('stroke', '#d8ede0').attr('stroke-width', 1.5);
+          g.append('circle').attr('r', 1.8).attr('fill', '#d8ede0');
+          g.on('mouseover', () => {
+            const tip = document.getElementById('map-tooltip');
+            tip.textContent = name;
+            tip.style.display = 'block';
+          }).on('mouseout', () => {
+            document.getElementById('map-tooltip').style.display = 'none';
+          });
+        });
+
+      } catch(e) {}
+    }
+
+    requestAnimationFrame(buildMap);
+    let _mapResizeTimer;
+    window.addEventListener('resize', () => { clearTimeout(_mapResizeTimer); _mapResizeTimer = setTimeout(buildMap, 150); });
 
     /* ── Vanta Birds ── */
     VANTA.BIRDS({

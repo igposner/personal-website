@@ -16,6 +16,8 @@ const CLIENT_ID = env.SPOTIFY_CLIENT_ID;
 const CLIENT_SECRET = env.SPOTIFY_CLIENT_SECRET;
 const REFRESH_TOKEN = env.SPOTIFY_REFRESH_TOKEN;
 const TMDB_API_KEY = env.TMDB_API_KEY;
+const LASTFM_API_KEY = env.LASTFM_API_KEY;
+const LASTFM_USER = 'igposner';
 
 function httpsGet(options, resolveUrl = false) {
   return new Promise((resolve, reject) => {
@@ -117,6 +119,24 @@ async function getNowPlaying() {
   }
 }
 
+async function getTopArtists() {
+  try {
+    const res = await httpsGet({
+      hostname: 'ws.audioscrobbler.com',
+      path: `/2.0/?method=user.gettopartists&user=${LASTFM_USER}&period=7day&limit=5&api_key=${LASTFM_API_KEY}&format=json`,
+      headers: { 'Accept': 'application/json' }
+    });
+    if (res.status !== 200 || !res.body) return [];
+    const data = JSON.parse(res.body);
+    return (data.topartists?.artist || []).map(a => ({
+      name: a.name,
+      plays: parseInt(a.playcount, 10)
+    }));
+  } catch (e) {
+    return [];
+  }
+}
+
 // Letterboxd cache
 let lbCache = null;
 let lbCacheTime = 0;
@@ -181,6 +201,9 @@ function json(res, data) {
 const server = http.createServer(async (req, res) => {
   if (req.url === '/api/now-playing') {
     return json(res, await getNowPlaying());
+  }
+  if (req.url === '/api/top-artists') {
+    return json(res, await getTopArtists());
   }
   if (req.url === '/api/letterboxd-favorites') {
     return json(res, await getLetterboxdFavorites());
