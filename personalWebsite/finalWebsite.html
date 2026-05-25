@@ -18,6 +18,7 @@
       box-sizing: border-box;
     }
 
+
     body {
       font-family: 'Lora', serif;
       font-weight: 400;
@@ -88,13 +89,6 @@
 
     /* ── Vanta wrapper ── */
     #vanta-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      pointer-events: none;
       background: #d8ede0;
     }
 
@@ -149,6 +143,7 @@
       display: flex;
       flex-direction: column;
       gap: var(--right-gap);
+      opacity: 0;
     }
 
     .home-name {
@@ -169,6 +164,7 @@
       height: var(--map-height);
       display: flex;
       flex-direction: column;
+      opacity: 0;
     }
 
     .lb-widget {
@@ -189,6 +185,43 @@
       font-size: 3.5rem;
       font-weight: 700;
       letter-spacing: -0.01em;
+      width: fit-content;
+      cursor: pointer;
+    }
+
+    .type-cursor {
+      display: inline-block;
+      font-weight: 300;
+      color: #2a4a35;
+      animation: blink 0.65s step-end infinite;
+      margin-left: 1px;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
+    @keyframes name-glitch {
+      0%   { text-shadow: none; transform: none; }
+      10%  { text-shadow: -3px 0 #ff2040, 3px 0 #1e90ff; transform: translateX(-2px); }
+      20%  { text-shadow: 3px 0 #ff2040, -3px 0 #1e90ff; transform: translateX(3px) skewX(-2deg); }
+      30%  { text-shadow: -4px 0 #ff2040, 4px 0 #1e90ff; transform: translateX(-1px); clip-path: inset(20% 0 50% 0); }
+      40%  { text-shadow: 2px 0 #ff2040, -2px 0 #1e90ff; transform: translateX(2px) skewX(1deg); clip-path: none; }
+      50%  { text-shadow: -3px 0 #1e90ff, 3px 0 #ff2040; transform: translateX(-3px); }
+      60%  { text-shadow: 3px 0 #ff2040, -3px 0 #1e90ff; transform: translateX(1px) skewX(-1deg); clip-path: inset(60% 0 10% 0); }
+      70%  { text-shadow: -2px 0 #1e90ff, 2px 0 #ff2040; transform: translateX(-2px); clip-path: none; }
+      85%  { text-shadow: 2px 0 #ff2040, -2px 0 #1e90ff; transform: translateX(1px); }
+      100% { text-shadow: none; transform: none; }
+    }
+
+    .home-name.glitching .name-first,
+    .home-name.glitching .name-last {
+      animation: name-glitch 0.5s steps(1) forwards;
+    }
+
+    .home-name.glitching .name-last {
+      animation-delay: 0.04s;
     }
 
     .home-links {
@@ -654,7 +687,7 @@
       font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      color: #999;
+      color: rgba(42, 74, 53, 0.7);
       margin-bottom: 12px;
     }
 
@@ -673,7 +706,7 @@
     .map-quote {
       font-size: 0.7rem;
       font-style: italic;
-      color: #aaa;
+      color: rgba(42, 74, 53, 0.7);
       line-height: 1.3;
     }
 
@@ -741,7 +774,7 @@
       gap: 5px;
       margin-top: 6px;
       font-size: 0.75rem;
-      color: #999;
+      color: rgba(42, 74, 53, 0.7);
     }
 
     .dot {
@@ -1077,6 +1110,12 @@
       #research { padding: 40px 20px; }
       .lb-films { flex-wrap: wrap; }
       .film-bubble { width: 150px; font-size: 0.85rem; }
+      #about { padding-left: 20px; }
+      .about-layout { flex-direction: column; gap: 32px; }
+      .bookshelf-section { width: 100%; align-items: flex-start; }
+      .bookshelf { width: 100%; }
+      .shelf-books { overflow-x: auto; padding-bottom: 4px; }
+      .shelf-plank { width: 100%; }
     }
   </style>
 </head>
@@ -1098,7 +1137,7 @@
     <a href="#photography">Photography</a>
   </div>
 
-  <div id="vanta-bg"></div>
+  <div id="vanta-bg">
 
   <section id="home">
     <div class="home-main">
@@ -1151,7 +1190,8 @@
     <div class="about-layout">
       <div class="text-box">
         <h2>About Me</h2>
-        <p>I am a student at WashU who loves anything math, neuroscience or AI. I am currently doing research, learning ML, watching movies, and exploring the world around me. Last week I visited SF for the first time and found myself entranced. The passion, determination, and drive to be the best that I found in that city has sparked an insatiable desire to fully immerse myself in that culture.</p>
+        <p>I'm a researcher and student at WashU studying Mathematics, CS, and Neuroscience. I'm interested in the brain, math, machine learning, photography, and film — and finding ways to blend my technical and creative backgrounds.</p>
+        <p>I enjoy exploring as much as I can, whether that be places, foods, or people.<br>I am very curious and want to experience as much of what life has to offer as I can. Right now, I'm chasing the questions at the edge of machine learning and how minds work. Wherever that ends up taking me, I'm excited to find out.</p>
       </div>
 
       <div class="bookshelf-section">
@@ -1282,6 +1322,7 @@
     </div>
   </section>
 
+  </div><!-- end vanta-bg -->
 
   <div class="photo-grid" id="photo-grid">
       <div class="photo-item" data-src="/webImages/IMG_0982.JPG"><img src="/webImages/IMG_0982.JPG" alt=""></div>
@@ -1426,14 +1467,14 @@
 
     const topNav = document.querySelector('nav');
     const homeLinks = document.querySelector('.home-links');
-    const photographySection = document.getElementById('photography');
-    if (topNav && photographySection) {
-      const photoObserver = new IntersectionObserver(entries => {
-        const photosVisible = entries.some(entry => entry.isIntersecting);
-        topNav.classList.toggle('links-hidden', photosVisible);
-        homeLinks?.classList.toggle('links-hidden', photosVisible);
+    const homeSection = document.getElementById('home');
+    if (topNav && homeSection) {
+      const homeObserver = new IntersectionObserver(entries => {
+        const homeVisible = entries.some(entry => entry.isIntersecting);
+        topNav.classList.toggle('links-hidden', !homeVisible);
+        homeLinks?.classList.toggle('links-hidden', !homeVisible);
       }, { threshold: 0.05 });
-      photoObserver.observe(photographySection);
+      homeObserver.observe(homeSection);
     }
 
     /* ── Lightbox ── */
@@ -1697,6 +1738,74 @@
       separation: 60,
       alignment: 40,
       cohesion: 40
+    });
+
+    // Name typing intro
+    (function () {
+      const first     = document.querySelector('.name-first');
+      const last      = document.querySelector('.name-last');
+      const mapWidget = document.querySelector('.map-widget');
+      const homeRight = document.querySelector('.home-right');
+
+      const firstText = first.textContent.trim();
+      const lastText  = last.textContent.trim();
+      first.textContent = '';
+      last.textContent  = '';
+
+      [mapWidget, homeRight].forEach(el => {
+        el.style.transition = 'opacity 0.7s ease';
+        el.style.pointerEvents = 'none';
+      });
+
+      const cursor = document.createElement('span');
+      cursor.className = 'type-cursor';
+      cursor.textContent = '|';
+      first.appendChild(cursor);
+
+      function type(el, text, charDelay, done) {
+        let i = 0;
+        (function next() {
+          if (i < text.length) {
+            el.insertBefore(document.createTextNode(text[i++]), cursor);
+            setTimeout(next, charDelay);
+          } else {
+            done();
+          }
+        })();
+      }
+
+      setTimeout(() => {
+        type(first, firstText, 85, () => {
+          last.appendChild(cursor);
+          setTimeout(() => {
+            type(last, lastText, 85, () => {
+              setTimeout(() => {
+                cursor.style.transition = 'opacity 0.3s';
+                cursor.style.opacity = '0';
+                setTimeout(() => cursor.remove(), 300);
+
+                mapWidget.style.opacity = '1';
+                mapWidget.style.pointerEvents = '';
+                setTimeout(() => {
+                  homeRight.style.opacity = '1';
+                  homeRight.style.pointerEvents = '';
+                }, 250);
+              }, 400);
+            });
+          }, 180);
+        });
+      }, 250);
+    })();
+
+    // Name glitch on click
+    document.querySelectorAll('.name-first, .name-last').forEach(el => {
+      el.addEventListener('click', () => {
+        const nameEl = document.querySelector('.home-name');
+        nameEl.classList.remove('glitching');
+        void nameEl.offsetWidth;
+        nameEl.classList.add('glitching');
+        setTimeout(() => nameEl.classList.remove('glitching'), 600);
+      });
     });
 
   </script>
