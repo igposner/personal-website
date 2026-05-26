@@ -282,12 +282,14 @@
 
     .bookshelf-section .widget-label {
       margin-bottom: 0;
+      color: rgba(42, 74, 53, 0.7);
     }
 
     .bookshelf {
       display: flex;
       flex-direction: column;
-      align-items: stretch;
+      align-items: flex-start;
+      width: max-content;
       perspective: 900px;
     }
 
@@ -399,6 +401,7 @@
 
     .shelf-plank {
       height: 16px;
+      width: 344px;
       background: linear-gradient(to bottom, #c8b89a, #a8926e);
       border: 2px solid #2a4a35;
       box-shadow: 4px 4px 0 #2a4a35;
@@ -1112,10 +1115,13 @@
       .film-bubble { width: 150px; font-size: 0.85rem; }
       #about { padding-left: 20px; }
       .about-layout { flex-direction: column; gap: 32px; }
-      .bookshelf-section { width: 100%; align-items: flex-start; }
-      .bookshelf { width: 100%; }
-      .shelf-books { overflow-x: auto; padding-bottom: 4px; }
-      .shelf-plank { width: 100%; }
+      .bookshelf-section { width: 100%; align-items: center; }
+      .shelf-books { overflow-x: visible; }
+      .stats-btn, .stats-bubble { display: none; }
+      .project-items { flex-direction: column; gap: 0; }
+      .project-item { border-left: none; border-top: 1.5px solid rgba(42,74,53,0.2); padding: 24px 0 0 0; margin-top: 24px; }
+      .project-item:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+      .project-item:last-child { padding-right: 0; }
     }
   </style>
 </head>
@@ -1293,7 +1299,7 @@
     </div>
 
     <div class="beyond-lab-box">
-      <h2>Beyond the Lab</h2>
+      <h2>Projects</h2>
       <div class="project-items">
 
         <div class="project-item">
@@ -1308,7 +1314,7 @@
 
         <div class="project-item">
           <div class="project-item-title">FICO Stock Pitch</div>
-          <p>An equity research project I put together for my investment club — a full write-up on Fair Isaac Corporation with a DCF model, WACC calculation, and comparable companies analysis to land on a target price and investment recommendation.</p>
+          <p>An equity research project I put together for my investment club — a full write-up on Fair Isaac Corporation with a DCF model, WACC calculation, and comparable companies analysis to land on a target price and investment recommendation. Placed top 3 in the junior analyst competition.</p>
         </div>
 
       </div>
