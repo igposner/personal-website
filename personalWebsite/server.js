@@ -231,7 +231,7 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  const filePath = path.join(__dirname, 'finalWebsite.html');
+  const filePath = path.join(__dirname, 'index.html');
   fs.readFile(filePath, (err, data) => {
     if (err) { res.writeHead(404); res.end('Not found'); return; }
     res.writeHead(200, { 'Content-Type': 'text/html' });
