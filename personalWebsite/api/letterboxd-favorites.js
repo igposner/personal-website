@@ -23,29 +23,19 @@ function httpsGet(options) {
 let lbCache = null;
 let lbCacheTime = 0;
 
+// Letterboxd blocks server-side scraping (Cloudflare 403), so favorites are listed here.
+// Update this list when you change your favorites on letterboxd.com/bigcaasirolle/.
+const LB_FAVORITES = [
+  { title: 'Dead Poets Society (1989)', slug: 'dead-poets-society' },
+  { title: 'Perfect Days (2023)', slug: 'perfect-days-2023' },
+  { title: 'Kill Bill: Vol. 1 (2003)', slug: 'kill-bill-vol-1' },
+  { title: 'La Haine (1995)', slug: 'la-haine' },
+];
+
 async function getLetterboxdFavorites() {
   if (lbCache && Date.now() - lbCacheTime < 10 * 60 * 1000) return lbCache;
   try {
-    const res = await httpsGet({
-      hostname: 'letterboxd.com',
-      path: '/bigcaasirolle/',
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html'
-      }
-    });
-
-    const html = res.body;
-    const favStart = html.indexOf('section id="favourites"');
-    const favEnd = html.indexOf('</section>', favStart);
-    const section = html.slice(favStart, favEnd);
-
-    const slugs = [];
-    const re = /data-item-name="([^"]+)"[^>]*data-item-slug="([^"]+)"/g;
-    let match;
-    while ((match = re.exec(section)) !== null && slugs.length < 4) {
-      slugs.push({ title: match[1], slug: match[2] });
-    }
+    const slugs = LB_FAVORITES;
 
     const favorites = await Promise.all(slugs.map(async ({ title, slug }) => {
       const titleOnly = title.replace(/\s*\(\d{4}\)$/, '');

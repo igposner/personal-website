@@ -543,7 +543,7 @@
       font-size: 0.65rem;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      color: #999;
+      color: #56826a;
       margin-bottom: 10px;
     }
 
@@ -551,6 +551,42 @@
       line-height: 1.7;
       color: #4a7a5a;
       margin: 0;
+    }
+
+    #about p + p, #research .text-box p + p {
+      margin-top: 14px;
+    }
+
+    .project-item-stack {
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+      color: #56826a;
+      margin-top: 14px;
+    }
+
+    .item-links {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .item-links a {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      text-decoration: none;
+      color: #2a4a35;
+      border: 1.5px solid #2a4a35;
+      padding: 5px 12px;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .item-links a:hover {
+      background: #2a4a35;
+      color: #d8ede0;
     }
 
     .brain-hint {
@@ -1132,6 +1168,7 @@
     <div class="nav-icons">
       <a href="https://www.instagram.com/posner_photography" target="_blank" title="Photography Instagram"><i class="fa-solid fa-camera"></i></a>
       <a href="https://www.linkedin.com/in/isaacposner14" target="_blank" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+      <a href="https://github.com/igposner" target="_blank" title="GitHub"><i class="fa-brands fa-github"></i></a>
       <a href="https://letterboxd.com/bigcaasirolle/" target="_blank" title="Letterboxd"><img src="https://cdn.simpleicons.org/letterboxd/2a4a35" width="18" height="18" alt="Letterboxd" style="display:block;opacity:0.7;transition:opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.7"></a>
       <a href="mailto:igposner06@gmail.com" title="Email"><i class="fa-solid fa-envelope"></i></a>
     </div>
@@ -1196,7 +1233,8 @@
     <div class="about-layout">
       <div class="text-box">
         <h2>About Me</h2>
-        <p>I'm a researcher and student at WashU studying Mathematics, CS, and Neuroscience. I'm interested in the brain, math, machine learning, photography, and film — and finding ways to blend my technical and creative backgrounds.<br><br>I enjoy exploring as much as I can, whether that be places, foods, or people.<br>I am very curious and want to experience as much of what life has to offer as I can. Right now, I'm chasing the questions at the edge of machine learning and how minds work. Wherever that ends up taking me, I'm excited to find out.</p>
+        <p>I'm a sophomore at WashU studying Mathematics and Computer Science, with a second major in Statistics. I build Bayesian models of brain processes at WashU Med, and I've worked as a project manager at Mercor, where I helped coordinate 500+ domain experts building agent evaluation datasets for a top AI lab, wrote the weekly client reports, and built autograders used to screen 1,000+ applicants.</p>
+        <p>On campus I'm an events coordinator for Best Buddies, planning events that build friendships and community for people with intellectual and developmental disabilities. Outside of work you can find me watching films, behind the camera, and meeting as many people as I can.</p>
       </div>
 
       <div class="bookshelf-section">
@@ -1295,7 +1333,11 @@
   <section id="research">
     <div class="text-box">
       <h2>Research</h2>
-      <p>Chasing my interest in neuroscience, I joined a lab at the start of my freshman year at the WashU med school working under Dr. Benjamin Kay and Dr. Rebecca Schwarzlose. At the lab I have been developing hierarchical Bayesian models around splines and gamma distributions to map out nonlinear relationships in fMRI data. Since beginning this work, I have gained much knowledge into programming, modeling, data science and more. I am excited to continue working with these amazing doctors and to apply this knowledge into future ventures.</p>
+      <p>Since freshman year I've worked with Dr. Benjamin Kay and Dr. Rebecca Schwarzlose at the WashU School of Medicine, building hierarchical Bayesian models in Stan that fit cubic splines to fMRI BOLD responses. Partial pooling lets each subject's noisy curve borrow strength from the group, which makes it possible to characterize the initial dip in auditory responses across more than 10,000 scans.</p>
+      <p>The goal is a model other researchers and clinicians can reuse on their own data. I'm writing it up as a first-author manuscript and will present it at Spark in 2027.</p>
+      <div class="item-links">
+        <a href="https://github.com/igposner/fMRI-hierarchical-models" target="_blank" rel="noopener">Code &#8599;</a>
+      </div>
     </div>
 
     <div class="beyond-lab-box">
@@ -1303,18 +1345,24 @@
       <div class="project-items">
 
         <div class="project-item">
-          <div class="project-item-title">Web-based Diplomacy Game</div>
-          <p>Building a web-based implementation of the classic strategy game, with a Python/FastAPI backend and a Next.js frontend. The twist is that the other players are AI agents powered by Gemini, which makes for some interesting games.</p>
+          <div class="project-item-title">HedgeHog</div>
+          <div class="project-item-tag">Hack Midwest 2026</div>
+          <p>Small businesses can see a rainy weekend or a fuel spike coming, but have no practical way to protect against it. HedgeHog takes a description of the business and its recent financials, uses an LLM to find the outside risks that move revenue, and sizes small offsetting positions on Kalshi prediction markets against the owner's risk budget (paper trading only). We built it in a weekend as a team; I owned the demo flow, including sample-business autofill and fallback results for when the live analysis can't run.</p>
+          <div class="project-item-stack">React &middot; TypeScript &middot; FastAPI &middot; Qwen on Akamai &middot; Vercel</div>
+          <div class="item-links">
+            <a href="https://github.com/nrgameace/HedgeHog" target="_blank" rel="noopener">Code &#8599;</a>
+            <a href="https://hedge-hog-sigma.vercel.app" target="_blank" rel="noopener">Demo &#8599;</a>
+          </div>
         </div>
 
         <div class="project-item">
-          <div class="project-item-title">Events Coordinator, Best Buddies</div>
-          <p>I help plan and run events for our chapter at WashU, which works to build friendships and create community for people with intellectual and developmental disabilities. The role is part logistics, part making sure everyone who shows up actually feels welcome.</p>
-        </div>
-
-        <div class="project-item">
-          <div class="project-item-title">FICO Stock Pitch</div>
-          <p>An equity research project I put together for my investment club — a full write-up on Fair Isaac Corporation with a DCF model, WACC calculation, and comparable companies analysis to land on a target price and investment recommendation. Placed top 3 in the junior analyst competition.</p>
+          <div class="project-item-title">Diplomacy vs. LLM Agents</div>
+          <div class="project-item-tag">Negotiation benchmark</div>
+          <p>A playable browser version of Diplomacy where the other six powers are LLM agents negotiating over private messages, built to become a benchmark for how well language models negotiate. Each phase, agents record the promises they make, which are later scored as kept, broken, or void. Every model call is logged with its cost under a per-game cap, and the rules engine is checked against a 160-case DATC adjudication suite.</p>
+          <div class="project-item-stack">Python &middot; FastAPI &middot; SQLite &middot; Next.js &middot; TypeScript &middot; DeepSeek</div>
+          <div class="item-links">
+            <a href="https://github.com/igposner/diplomacy-v2" target="_blank" rel="noopener">Code &#8599;</a>
+          </div>
         </div>
 
       </div>
