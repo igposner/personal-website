@@ -175,8 +175,43 @@
 
     .home-name {
       display: flex;
-      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 28px;
       line-height: 1;
+    }
+
+    .name-stack {
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .home-intro {
+      max-width: 230px;
+      padding-top: 6px;
+      text-align: right;
+      opacity: 0;
+    }
+
+    .intro-tagline {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      color: #2a4a35;
+      margin-bottom: 8px;
+    }
+
+    .intro-roles span { display: block; white-space: nowrap; }
+    .intro-roles .intro-dot { display: none; }
+
+    .intro-roles {
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      line-height: 1.5;
+      color: rgba(42, 74, 53, 0.7);
     }
 
     .name-first,
@@ -1136,7 +1171,8 @@
       .home-left, .home-right { width: 100%; height: auto; }
       .home-left { gap: 24px; }
       .home-right { gap: 16px; }
-      .home-name { height: auto; }
+      .home-name { height: auto; flex-direction: column; align-items: flex-start; gap: 14px; }
+      .home-intro { max-width: none; text-align: left; padding-top: 0; }
       .map-widget { width: 100%; height: auto; aspect-ratio: 4 / 3; }
       .spotify-cell, .lb-widget { width: 100%; height: auto; min-height: 0; }
       .name-first, .name-last { font-size: 2.4rem; }
@@ -1186,8 +1222,14 @@
     <div class="home-main">
       <div class="home-left">
         <div class="home-name">
-          <div class="name-first">Isaac</div>
-          <div class="name-last">Posner</div>
+          <div class="name-stack">
+            <div class="name-first">Isaac</div>
+            <div class="name-last">Posner</div>
+          </div>
+          <div class="home-intro">
+            <div class="intro-tagline">Modeling how brains work and testing how machines think.</div>
+            <div class="intro-roles"><span>Student @ WashU</span> <span class="intro-dot">&middot;</span> <span>Previous PM @ Mercor</span></div>
+          </div>
         </div>
 
         <div class="widget map-widget">
@@ -1799,13 +1841,14 @@
       const last      = document.querySelector('.name-last');
       const mapWidget = document.querySelector('.map-widget');
       const homeRight = document.querySelector('.home-right');
+      const homeIntro = document.querySelector('.home-intro');
 
       const firstText = first.textContent.trim();
       const lastText  = last.textContent.trim();
       first.textContent = '';
       last.textContent  = '';
 
-      [mapWidget, homeRight].forEach(el => {
+      [mapWidget, homeRight, homeIntro].forEach(el => {
         el.style.transition = 'opacity 0.7s ease';
         el.style.pointerEvents = 'none';
       });
@@ -1837,6 +1880,8 @@
                 cursor.style.opacity = '0';
                 setTimeout(() => cursor.remove(), 300);
 
+                homeIntro.style.opacity = '1';
+                homeIntro.style.pointerEvents = '';
                 mapWidget.style.opacity = '1';
                 mapWidget.style.pointerEvents = '';
                 setTimeout(() => {
